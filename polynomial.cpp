@@ -27,6 +27,21 @@ void Polynomial::add_last(double coef, int power) {
 	}
 }
 
+void Polynomial::reverse() {
+	Monomial* prev = nullptr;
+	Monomial* current = start;
+	Monomial* next;
+
+	while (current != nullptr) {
+		next = current->next;
+		current->next = prev;
+		prev = current;
+		current = next;
+	}
+
+	start = prev;
+}
+
 void Polynomial::add(double coef, int power) {
 	if (start == nullptr) {
 		add_last(coef, power);
@@ -80,18 +95,6 @@ void Polynomial::delete_zero_monomials() {
 	last = now;
 }
 
-double Polynomial::calculate(double x, double y, double z) const {
-	double ans = 0.0;
-	Monomial* now = start;
-	while (now != nullptr) {
-		int p[3]{};
-		Monomial::convert_back(now->power, p[0], p[1], p[2]);
-		ans += now->coef * std::pow(x, p[0]) * std::pow(y, p[1]) * std::pow(z, p[2]);
-		now = now->next;
-	}
-	return ans;
-}
-
 Polynomial& Polynomial::operator=(const Polynomial& p)
 {
 	if (this == &p)
@@ -110,16 +113,6 @@ Polynomial& Polynomial::operator=(const Polynomial& p)
 
 Polynomial Polynomial::operator+() const {
 	return *this;
-}
-
-Polynomial Polynomial::operator-() const {
-	Polynomial ret = Polynomial(*this);
-	auto now = ret.start;
-	while (now != nullptr) {
-		now->coef = -now->coef;
-		now = now->next;
-	}
-	return ret;
 }
 
 Polynomial Polynomial::operator+(const Polynomial& p) const {
@@ -153,26 +146,14 @@ Polynomial Polynomial::operator+(const Polynomial& p) const {
 	return ret;
 }
 
-Polynomial Polynomial::operator-(const Polynomial& p) const {
-	return *this + -p;
-}
-
-Polynomial Polynomial::operator*(const Polynomial& p) const {
-	Polynomial ret;
-	Monomial* now1 = this->start;
-	while (now1 != nullptr) {
-		Monomial* now2 = p.start;
-		while (now2 != nullptr) {
-			int r1[3]{}, r2[3]{};
-			Monomial::convert_back(now1->power, r1[0], r1[1], r1[2]);
-			Monomial::convert_back(now2->power, r2[0], r2[1], r2[2]);
-			ret.add(now1->coef * now2->coef, r1[0] + r2[0], r1[1] + r2[1], r1[2] + r2[2]);
-			now2 = now2->next;
-		}
-		now1 = now1->next;
+void Polynomial::plus(Polynomial& other) {
+	Monomial* current = other.start;
+	while (current != nullptr) {
+		add(current->coef, current->power);
+		current = current->next;
 	}
-	ret.delete_zero_monomials();
-	return ret;
+	other.clear();
+	delete_zero_monomials();
 }
 
 std::istream& operator>>(std::istream& in, Polynomial& p) {
@@ -243,8 +224,11 @@ std::istream& operator>>(std::istream& in, Polynomial& p) {
 }
 
 std::ostream& operator<<(std::ostream& out, const Polynomial& p) {
+	
 	auto now = p.start;
 	int cnt = 0;
+	if (now == nullptr) out << 0;
+	else
 	while (now != nullptr) {
 		int r[3]{};
 		now->convert_back(now->power, r[0], r[1], r[2]);
@@ -260,8 +244,10 @@ std::ostream& operator<<(std::ostream& out, const Polynomial& p) {
 		for (int i = 0; i < 3; i++)
 			if (r[i] != 0)
 				out << (char)('x' + i) << '^' << r[i];
+		out << " ";
 		now = now->next;
 		cnt++;
 	}
+	
 	return out;
 }
