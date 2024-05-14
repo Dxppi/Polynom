@@ -1,9 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include "polynomial.h"
+#include <locale>
 using namespace std;
 
 int main() {
+	setlocale(LC_ALL, "Russian");
 	ifstream fin(R"(example.txt)");
 	Polynomial p1, p2;
 	Polynomial t;
@@ -13,10 +15,10 @@ int main() {
 		cout << "p1: " << p1 << endl << "p2: " << p2 << endl;
 		t = p1 + p2;
 		t.reverse();
-		cout << "p1 + p2: ";
+		cout << "\np1 + p2: ";
 		cout << t << "\n\n\n";
 
-		cout << "Plus Merge" << endl;
+		cout << "Сумма Слиянием" << endl;
 		p1.plus(p2);
 		cout << "p1: " << p1 << endl << "p2: " << p2 << endl;
 		cout << "\n\n\n";

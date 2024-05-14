@@ -233,17 +233,17 @@ std::ostream& operator<<(std::ostream& out, const Polynomial& p) {
 		int r[3]{};
 		now->convert_back(now->power, r[0], r[1], r[2]);
 		if (cnt > 0 && now->coef >= 0)
-			out << '+';
+			out << '+' << " ";
 		if ((now->coef == 1 || now->coef == -1) && (r[0] != 0 || r[1] != 0 || r[2] != 0)) {
 			if (now->coef == -1)
 				out << '-';
 		}
 		else {
-			out << now->coef;
+			out<<now->coef;
 		}
 		for (int i = 0; i < 3; i++)
 			if (r[i] != 0)
-				out << (char)('x' + i) << '^' << r[i];
+				out << "(" << (char)('x' + i) << '^' << r[i] << ")";
 		out << " ";
 		now = now->next;
 		cnt++;
