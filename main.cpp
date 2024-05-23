@@ -20,6 +20,7 @@ int main() {
 
 		cout << "Сумма Слиянием" << endl;
 		p1.plus(p2);
+		p1.reverse();
 		cout << "p1: " << p1 << endl << "p2: " << p2 << endl;
 		cout << "\n\n\n";
 		count--;
