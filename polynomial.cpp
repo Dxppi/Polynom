@@ -146,14 +146,12 @@ Polynomial Polynomial::operator+(const Polynomial& p) const {
 	return ret;
 }
 
-void Polynomial::plus(Polynomial& other) {
-	Monomial* current = other.start;
-	while (current != nullptr) {
-		add(current->coef, current->power);
-		current = current->next;
-	}
-	other.clear();
-	delete_zero_monomials();
+void Polynomial::plus(Polynomial& other) { //Сумма Слиянием
+	while (other.start != nullptr) {
+		add(other.start->coef, other.start->power);//Добавляем звенья 
+		other.start = other.start->next;
+	}	
+	delete_zero_monomials(); //Удаление мономов с коэффицентом 0
 }
 
 std::istream& operator>>(std::istream& in, Polynomial& p) {
